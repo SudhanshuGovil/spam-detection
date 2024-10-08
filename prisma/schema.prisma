@@ -1,0 +1,31 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Users {
+  id        String     @id @default(cuid())
+  name      String
+  email     String?
+  phone     String     @unique
+  password  String
+  contacts  Contacts[]
+  createdAt DateTime   @default(now())
+}
+
+model Contacts {
+  id         String   @id @default(cuid())
+  name       String
+  phone      String
+  email      String?
+  isSpam     Boolean  @default(false)
+  userId     String?
+  registered Boolean  @default(false)
+  user       Users?   @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
